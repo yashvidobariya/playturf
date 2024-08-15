@@ -34,7 +34,8 @@ const useFilterData = (props) => {
                 const first_Name = item.bookedby?.first_name ? item.bookedby?.first_name.toLowerCase() : "";
                 const last_Name = item.bookedby?.last_name ? item.bookedby?.last_name.toLowerCase() : "";
                 const name = `${first_Name} ${last_Name}`.trim();
-
+                const Ticketname = item?.name ? item?.name.toLowerCase() : "";
+                console.log("tiekcetname", Ticketname)
                 return (
                     fullName.includes(lowercaseValue) ||
                     lastName.includes(lowercaseValue) ||
@@ -42,7 +43,8 @@ const useFilterData = (props) => {
                     message.includes(lowercaseValue) ||
                     ownername.includes(lowercaseValue) ||
                     groundname.includes(lowercaseValue) ||
-                    name.includes(lowercaseValue)
+                    name.includes(lowercaseValue) ||
+                    Ticketname.includes(lowercaseValue)
                 );
             });
         }

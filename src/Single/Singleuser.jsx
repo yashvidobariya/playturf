@@ -13,6 +13,7 @@ const Singleuser = ({ user: initialUser }) => {
     const [userToDelete, setUserToDelete] = useState(null);
     const navigate = useNavigate();
     const [user, setUser] = useState(initialUser);
+
     const handleDelete = async (userId) => {
         try {
             const token = localStorage.getItem("token");

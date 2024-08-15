@@ -35,174 +35,54 @@ const Dashboard = () => {
         const fetchData = async () => {
             try {
                 const token = localStorage.getItem("token");
-                const response = await GlobalApi(ShowUsersAPI, 'POST', null, token);
+                const [
+                    showUsersResponse,
+                    revenueGrowthResponse,
+                    adminShowUserActivityResponse,
+                    bookingValueResponse,
+                    totalBookingResponse,
+                    totalRevenueResponse,
+                    averageBookingValueResponse
+                ] = await Promise.all([
+                    GlobalApi(ShowUsersAPI, 'POST', null, token),
+                    GlobalApi(Revenuegrowth, 'POST', null, token),
+                    GlobalApi(Adminshowuseractivity, 'POST', null, token),
+                    GlobalApi(Bookingvalue, 'POST', null, token),
+                    GlobalApi(Totalbooking, 'POST', null, token),
+                    GlobalApi(Totalrevenue, 'POST', null, token),
+                    GlobalApi(Averagebookingvalue, 'POST', null, token)
+                ]);
 
-                if (response.status === 201) {
-                    setdashboaddata(response.data);
-                } else if (response.status === 401) {
-                    seterrormessage("Authentication error. Please login as an Admin.");
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('userdata');
+                if (showUsersResponse.status === 201) {
+                    setdashboaddata(showUsersResponse.data);
                 }
+                if (revenueGrowthResponse.status === 200) {
+                    setrevenuegrowth(revenueGrowthResponse.data?.dailyGrowth || []);
+                }
+                if (adminShowUserActivityResponse.status === 200) {
+                    setactiveuser(adminShowUserActivityResponse.data?.U_Active);
+                }
+                if (bookingValueResponse.status === 200) {
+                    setbookingvalue(bookingValueResponse.data?.BookingValue || []);
+                }
+                if (totalBookingResponse.status === 200) {
+                    settotalbooking(totalBookingResponse.data?.booking);
+                }
+                if (totalRevenueResponse.status === 200) {
+                    settotalrevenue(totalRevenueResponse.data?.totalRevenue);
+                }
+                if (averageBookingValueResponse.status === 200) {
+                    setaveragebookingvalue(averageBookingValueResponse.data?.averageBookingValue || []);
+                }
+
             } catch (error) {
-                console.error('Error:', error);
+                console.error('Error fetching data:', error);
                 seterrormessage("An error occurred while fetching data.");
             } finally {
                 setloading(false);
             }
         };
-        fetchData();
-    }, []);
 
-    useEffect(() => {
-        const fetchdata = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await GlobalApi(Revenuegrowth, 'Post', null, token);
-                if (response.status === 401) {
-                    seterrormessage('Authentication error, please login again.');
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('userdata');
-                } else if (Array.isArray(response.data?.dailyGrowth)) {
-                    setrevenuegrowth(response.data?.dailyGrowth);
-                    console.log("revenuegrowth", response.data?.dailyGrowth)
-                } else {
-                    console.log('no data found in response');
-                }
-            }
-            catch (error) {
-                console.error('error fetching data', error);
-            } finally {
-                setloading(false);
-            }
-        };
-        fetchdata();
-    }, [])
-
-
-    useEffect(() => {
-        const fetchdata = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                const response = await GlobalApi(Adminshowuseractivity, 'POST', null, token);
-                console.log(response)
-                if (response.status === 200) {
-                    setactiveuser(response.data.U_Active);
-                    console.log(response.data.U_Active);
-                } else if (response.status === 401) {
-                    seterrormessage("Authentication error. Please login as an Admin.");
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('userdata');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                seterrormessage("An error occurred while fetching data.");
-            } finally {
-                setloading(false);
-            }
-        };
-        fetchdata();
-    }, []);
-
-
-    useEffect(() => {
-        const fetchdata = async () => {
-            try {
-                const token = localStorage.getItem('token');
-                const response = await GlobalApi(Bookingvalue, 'Post', null, token);
-                if (response.status === 401) {
-                    seterrormessage('Authentication error, please login again.');
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('userdata');
-                } else if (Array.isArray(response.data?.BookingValue)) {
-                    setbookingvalue(response.data?.BookingValue);
-                    console.log("Bookingvalue", response.data?.BookingValue)
-                } else {
-                    console.log('no data found in response');
-                }
-            }
-            catch (error) {
-                console.error('error fetching data', error);
-            } finally {
-                setloading(false);
-            }
-        };
-        fetchdata();
-    }, [])
-
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                const response = await GlobalApi(Totalbooking, 'POST', null, token);
-
-                if (response.status === 200) {
-                    settotalbooking(response.data.booking);
-                    console.log("totalbooking", response.data.booking);
-                } else if (response.status === 401) {
-                    seterrormessage("Authentication error. Please login as an Admin.");
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('userdata');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                seterrormessage("An error occurred while fetching data.");
-            } finally {
-                setloading(false);
-            }
-        };
-        fetchData();
-    }, []);
-
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                const response = await GlobalApi(Totalrevenue, 'POST', null, token);
-
-                if (response.status === 200) {
-                    const response = await GlobalApi(Totalrevenue, 'POST', null, token);
-                    settotalrevenue(response.data.totalRevenue);
-                    console.log("Totalrevenue", response.data.totalRevenue);
-                } else if (response.status === 401) {
-                    seterrormessage("Authentication error. Please login as an Admin.");
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('userdata');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                seterrormessage("An error occurred while fetching data.");
-            } finally {
-                setloading(false);
-            }
-        };
-        fetchData();
-    }, []);
-
-
-    useEffect(() => {
-        const fetchData = async () => {
-            try {
-                const token = localStorage.getItem("token");
-                const response = await GlobalApi(Averagebookingvalue, 'POST', null, token);
-
-                if (response.status === 200) {
-                    setaveragebookingvalue(response.data.averageBookingValue);
-                    console.log("averagebookingvalue", response.data.averageBookingValue);
-                } else if (response.status === 401) {
-                    seterrormessage("Authentication error. Please login as an Admin.");
-                    localStorage.removeItem('token');
-                    localStorage.removeItem('userdata');
-                }
-            } catch (error) {
-                console.error('Error:', error);
-                seterrormessage("An error occurred while fetching data.");
-            } finally {
-                setloading(false);
-            }
-        };
         fetchData();
     }, []);
 
@@ -237,7 +117,7 @@ const Dashboard = () => {
             }
         } catch (error) {
             console.error('Error:', error);
-            seterrormessage("An error occurred while fetching data.");
+            // seterrormessage("An error occurred while fetching data.");
         } finally {
             setloading(false);
         }
@@ -548,7 +428,7 @@ const Dashboard = () => {
                             <div className="home-user">
                                 <input type='date' value={start_date} onChange={handleStartDateChange} className='startdate' />
                                 <input type='date' value={end_date} onChange={handleEndDateChange} className='enddate' />
-                                {/* <button onClick={resetDateSelection} className='reset'>Reset</button> */}
+
                                 <button onClick={() => handleIntervalClick('day')} className={selectedInterval === 'day' ? 'active' : ''}>Day</button>
                                 <button onClick={() => handleIntervalClick('week')} className={selectedInterval === 'week' ? 'active' : ''}>Week</button>
                                 <button onClick={() => handleIntervalClick('month')} className={selectedInterval === 'month' ? 'active' : ''}>Month</button>

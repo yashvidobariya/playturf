@@ -30,7 +30,6 @@ const Venue = () => {
     const [topPerformingMessage, setTopPerformingMessage] = useState("");
     const { filteredData, searchValue, setSearchValue, selectedDate, setSelectedDate } = useFilterData(totalground);
 
-
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
@@ -57,7 +56,7 @@ const Venue = () => {
             }
         };
         fetchdata();
-    }, [])
+    }, []);
     console.log("totalground", totalground)
 
 

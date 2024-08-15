@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import { GlobalApi } from '../service/GlobalApi';
 import { Adminshowuseractivity, Allchurnrate, Churnrate, ShowUsersAPI } from '../service/APIrouter';
 import Singleuser from '../Single/Singleuser';
@@ -25,6 +25,14 @@ const Users = () => {
     const [enddate, setEnddate] = useState('');
     const { filteredData, searchValue, setSearchValue, selectedDate, setSelectedDate } = useFilterData(userdata);
 
+    const lastpostindex = currentpage * postperpage;
+    console.log("lastpostindex", lastpostindex);
+    const firstpostindex = lastpostindex - postperpage;
+
+    const currentpost = useMemo(() => {
+        return Array.isArray(filteredData) ? filteredData.slice(firstpostindex, lastpostindex) : [];
+    }, [filteredData, firstpostindex, lastpostindex]);
+
     const handleDateChange = (date) => {
         setSelectedDate(date);
     };
@@ -38,27 +46,29 @@ const Users = () => {
     };
 
     useEffect(() => {
-        const fetchdata = async () => {
+        const fetchData = async () => {
             try {
                 const token = localStorage.getItem("token");
                 const response = await GlobalApi(ShowUsersAPI, 'POST', null, token);
-                if (response.status === 401) {
-                    seterrormessage('Authentication error, please login again.');
+
+                if (response.status === 201) {
+                    setuserdata(response.data.users);
+                    console.log("userdata", response.data.users);
+                } else if (response.status === 401) {
+                    seterrormessage("Authentication error. Please login as an Admin.");
                     localStorage.removeItem('token');
                     localStorage.removeItem('userdata');
-                } else if (Array.isArray(response.data?.users)) {
-                    setuserdata(response.data.users);
-                } else {
-                    console.error('user data not fetch', response.data);
                 }
             } catch (error) {
-                console.error('error', error);
+                console.error('Error:', error);
+                seterrormessage("An error occurred while fetching data.");
             } finally {
                 setloading(false);
             }
         };
-        fetchdata();
+        fetchData();
     }, []);
+
 
     useEffect(() => {
         const fetchData = async () => {
@@ -143,6 +153,7 @@ const Users = () => {
         }
     }, [startdate, enddate, allchurnrate]);
 
+
     if (errormessage) {
         return (
             <div className="error-message">
@@ -194,10 +205,7 @@ const Users = () => {
     };
 
     const lineChartData = dashboaddata && Array.isArray(dashboaddata) ? processUserData(dashboaddata, interval) : {};
-    const lineuserdata = dashboaddata && Array.isArray(userdata) ? processUserData(userdata, interval) : {};
-    const lastpostindex = currentpage * postperpage;
-    const firstpostindex = lastpostindex - postperpage;
-    const currentpost = Array.isArray(filteredData) ? filteredData.slice(firstpostindex, lastpostindex) : [];
+    const lineuserdata = userdata && Array.isArray(userdata) ? processUserData(userdata, interval) : {};
 
     return (
         <>

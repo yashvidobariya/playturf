@@ -39,7 +39,7 @@ const Header = () => {
             <div className="header-content">
                 <div className="navbar-icon">
                     {activeLink && activeLink.link !== '/dashboard' && (
-                        <Link to={"/home"}><IoHomeSharp /> / </Link>
+                        <Link to={"/dashboard"}><IoHomeSharp /> / </Link>
                     )}
                 </div>
                 <div className="navbar-path">

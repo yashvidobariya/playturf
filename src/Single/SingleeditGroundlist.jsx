@@ -22,7 +22,7 @@ const SingleeditGroundlist = () => {
         address: '',
         rulesandregulation: '',
         facilities: '',
-        sport_type: '',
+        sport_type: [],
         photos: '',
         baseprice: '',
         price: [
@@ -40,6 +40,11 @@ const SingleeditGroundlist = () => {
                 ...formdata,
                 photos: Array.from(files)
             });
+        } else if (name === 'sport_type') {
+            setformdata({
+                ...formdata,
+                [name]: value.split(',').map(type => type.trim())
+            });
         } else {
             setformdata({
                 ...formdata,
@@ -47,7 +52,6 @@ const SingleeditGroundlist = () => {
             });
         }
     };
-
 
     const handlePriceChange = (e, index) => {
         const { name, value } = e.target;
@@ -137,7 +141,7 @@ const SingleeditGroundlist = () => {
                         country: data?.ground.country || '',
                         address: data?.ground.address || '',
                         rulesandregulation: data?.ground.rulesandregulation || '',
-                        sport_type: data?.ground.sport_type || '',
+                        sport_type: data?.ground.sport_type || [],
                         facilities: data?.ground.facilities || '',
                         baseprice: data?.ground.baseprice || '',
                         photos: data?.ground.photos || [],
@@ -249,7 +253,7 @@ const SingleeditGroundlist = () => {
                             <div className="add-list">
                                 <label>Sport Types</label>
                                 <div className="add-list-flex">
-                                    <input type="text" name="sport_type" onChange={handlechange} value={formdata.sport_type || '-'} />
+                                    <input type="text" name="sport_type" onChange={handlechange} value={formdata.sport_type.join(', ')} />
                                 </div>
                             </div>
                         </div>

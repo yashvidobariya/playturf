@@ -646,12 +646,26 @@ a {
 }
 
 .user-chart-content input,
-.home-user input {
+.home-user input,
+.resetchurnrate {
     margin: 25px 0px 25px 20px;
     padding: 5px 8px;
     border: 1px solid var(--primary-color);
     border-radius: 10px;
+    background-color: var(--color);
+    outline: none;
     color: var(--secondary-color);
+}
+
+.resetchurnrate {
+    &:focus {
+        outline: none;
+    }
+
+    &:hover {
+        background-color: var(--secondary-color);
+        color: var(--color);
+    }
 }
 
 /* ===========pagination================ */
@@ -1707,7 +1721,13 @@ select {
 .checkbox {
     display: flex;
     gap: 5px;
+}
 
+.addgrounderror {
+    display: flex;
+    font-size: 25px;
+    color: red;
+    margin: 0 220px;
 }
 
 .addground-des {

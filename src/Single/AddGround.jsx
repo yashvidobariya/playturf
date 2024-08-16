@@ -61,7 +61,7 @@ const AddGround = () => {
                     console.log(selectedownerid);
                     console.log("selectedOwner", selectedowner);
                 } else {
-                    console.log("Owner not found for mobile number:", selectedOption.value);
+                    alert("Owner not found for mobile number:", selectedOption.value)
                     setownerid("");
                     setFormdata({
                         ...formdata,
@@ -72,7 +72,7 @@ const AddGround = () => {
                 console.error('No data found in response');
             }
         } catch (error) {
-            console.error('Error fetching data:', error);
+            console.error('Error fetching data', error);
         } finally {
             setLoading(false);
         }

@@ -117,7 +117,7 @@ const Dashboard = () => {
             }
         } catch (error) {
             console.error('Error:', error);
-            // seterrormessage("An error occurred while fetching data.");
+            seterrormessage("An error occurred while fetching data.");
         } finally {
             setloading(false);
         }

@@ -73,7 +73,7 @@ const Singlebooking = ({ booking }) => {
                     />
                     <span>{userdata.bookedby && userdata.bookedby.first_name ? `${userdata.bookedby.first_name} ${userdata.bookedby.last_name}` : "-"}</span>
                 </td>
-                <td className='user-div'>USA</td>
+
                 <td className='user-div'>{userdata.groundid?.groundname ? userdata.groundid.groundname : "-"}</td>
                 <td className='user-div'>
                     <Link to={`/bookings/Bookingdetails/${userdata._id}`} >

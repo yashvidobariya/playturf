@@ -1,7 +1,7 @@
-import { useState, useEffect } from 'react';
+import { useEffect, useState } from "react";
 
 const useFilterData = (props) => {
-    const [filteredData, setFilteredData] = useState([]);
+    const [filteredData, setFilteredData] = useState(props);
     const [searchValue, setSearchValue] = useState("");
     const [selectedDate, setSelectedDate] = useState("");
 
@@ -11,6 +11,7 @@ const useFilterData = (props) => {
             startDate.setHours(0, 0, 0, 0);
             const endDate = new Date(date);
             endDate.setHours(23, 59, 59, 999);
+
             return data.filter((item) => {
                 const itemDate = new Date(item.createdat);
                 return itemDate >= startDate && itemDate <= endDate;
@@ -35,7 +36,7 @@ const useFilterData = (props) => {
                 const last_Name = item.bookedby?.last_name ? item.bookedby?.last_name.toLowerCase() : "";
                 const name = `${first_Name} ${last_Name}`.trim();
                 const Ticketname = item?.name ? item?.name.toLowerCase() : "";
-                console.log("tiekcetname", Ticketname)
+
                 return (
                     fullName.includes(lowercaseValue) ||
                     lastName.includes(lowercaseValue) ||
@@ -52,17 +53,23 @@ const useFilterData = (props) => {
 
     useEffect(() => {
         let filtered = props;
-        if (selectedDate) {
-            filtered = filterByDate(filtered, selectedDate);
+
+        if (filtered.length > 0) {
+            if (selectedDate) {
+                console.log("Filtering by date:", selectedDate);
+                filtered = filterByDate(filtered, selectedDate);
+            }
+            if (searchValue) {
+                console.log("Filtering by search value:", searchValue);
+                filtered = filterBySearch(filtered, searchValue);
+            }
         }
-        if (searchValue) {
-            filtered = filterBySearch(filtered, searchValue);
-        }
+
+        console.log("Filtered data:", filtered);
         setFilteredData(filtered);
     }, [props, selectedDate, searchValue]);
 
     return { filteredData, searchValue, setSearchValue, selectedDate, setSelectedDate };
 };
-
 
 export default useFilterData;

@@ -107,7 +107,6 @@ const Bookings = () => {
         fetchData();
     }, []);
 
-
     const handleChange = async (selectedOption) => {
         setSelectedOption(selectedOption);
         try {
@@ -158,7 +157,6 @@ const Bookings = () => {
             setloading(false);
         }
     };
-
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
@@ -280,8 +278,7 @@ const Bookings = () => {
                             <thead>
                                 <tr>
                                     <th scope="col">user Name</th>
-                                    <th scope="col">Country</th>
-                                    <th scope="col">Phone No.</th>
+                                    <th scope="col">Ground Name</th>
                                     <th scope="col">Details </th>
                                     <th scope="col">Status</th>
                                     <th scope="col">Date</th>

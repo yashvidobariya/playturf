@@ -23,15 +23,15 @@ const Users = () => {
     const [interval, setInterval] = useState('day');
     const [startdate, setStartdate] = useState('');
     const [enddate, setEnddate] = useState('');
+
     const { filteredData, searchValue, setSearchValue, selectedDate, setSelectedDate } = useFilterData(userdata);
 
-    const lastpostindex = currentpage * postperpage;
-    console.log("lastpostindex", lastpostindex);
-    const firstpostindex = lastpostindex - postperpage;
-
+    const lastpostindex = useMemo(() => currentpage * postperpage, [currentpage, postperpage]);
+    const firstpostindex = useMemo(() => lastpostindex - postperpage, [lastpostindex, postperpage]);
     const currentpost = useMemo(() => {
         return Array.isArray(filteredData) ? filteredData.slice(firstpostindex, lastpostindex) : [];
     }, [filteredData, firstpostindex, lastpostindex]);
+    console.log("currentpage", currentpost);
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
@@ -207,6 +207,10 @@ const Users = () => {
     const lineChartData = dashboaddata && Array.isArray(dashboaddata) ? processUserData(dashboaddata, interval) : {};
     const lineuserdata = userdata && Array.isArray(userdata) ? processUserData(userdata, interval) : {};
 
+    const handleresetdate = () => {
+        setStartdate("");
+        setEnddate("");
+    }
     return (
         <>
             <Sidebar />
@@ -245,10 +249,12 @@ const Users = () => {
                                             <Singleuser key={user._id} user={user} />
                                         ))
                                     ) : (
+
                                         <div className="nodatafound">
                                             <p>No data found</p>
                                         </div>
-                                    )}
+                                    )
+                                    }
                                 </tbody>
                             </table>
                         </div>
@@ -296,6 +302,7 @@ const Users = () => {
                             <div className="user-chart-content">
                                 <input type='date' value={startdate} onChange={handleStartDateChange} className='startdate' />
                                 <input type='date' value={enddate} onChange={handleEndDateChange} className='enddate' />
+                                <button className='resetchurnrate' onClick={handleresetdate}>Reset</button>
                                 <ResponsiveContainer width="100%" height={350}>
                                     <LineChart data={churnrate}>
                                         <CartesianGrid strokeDasharray="2 2" />

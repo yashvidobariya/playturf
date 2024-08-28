@@ -11,8 +11,12 @@ export const GlobalApi = async (url, method, data, token) => {
         request.body = JSON.stringify(data);
     }
 
+    //console.log('Request:', request);
+
     try {
         const response = await fetch(url, request);
+        console.log('Response:', response);
+
         const contentType = response.headers.get('Content-Type');
         let responsedata;
 
@@ -27,7 +31,7 @@ export const GlobalApi = async (url, method, data, token) => {
             status: response.status
         };
     } catch (error) {
-        console.error('error', error);
-        throw new Error('fail to fetch api');
+        console.error('Error:', error.message);
+        throw new Error('Failed to fetch API');
     }
 }

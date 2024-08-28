@@ -1,6 +1,3 @@
-
-
-
 import React, { useEffect, useState } from 'react';
 import '../style/Index.css';
 import { ScatterChart, Scatter, LineChart, BarChart, Bar, Line, XAxis, YAxis, CartesianGrid, Tooltip, Legend, ResponsiveContainer, AreaChart, Area } from 'recharts';
@@ -30,7 +27,6 @@ const Dashboard = () => {
     const [selectedInterval, setSelectedInterval] = useState('day');
     const [start_date, setStartdate] = useState('');
     const [end_date, setEnddate] = useState('');
-
     useEffect(() => {
         const fetchData = async () => {
             try {
@@ -55,24 +51,38 @@ const Dashboard = () => {
 
                 if (showUsersResponse.status === 201) {
                     setdashboaddata(showUsersResponse.data);
+                } else {
+                    console.log("showusererorr");
                 }
                 if (revenueGrowthResponse.status === 200) {
                     setrevenuegrowth(revenueGrowthResponse.data?.dailyGrowth || []);
+                } else {
+                    console.log("revenueGrowthResponse");
                 }
                 if (adminShowUserActivityResponse.status === 200) {
                     setactiveuser(adminShowUserActivityResponse.data?.U_Active);
+                } else {
+                    console.log("adminShowUserActivityResponse");
                 }
                 if (bookingValueResponse.status === 200) {
                     setbookingvalue(bookingValueResponse.data?.BookingValue || []);
+                } else {
+                    console.log("bookingValueResponse");
                 }
                 if (totalBookingResponse.status === 200) {
                     settotalbooking(totalBookingResponse.data?.booking);
+                } else {
+                    console.log("totalBookingResponse");
                 }
                 if (totalRevenueResponse.status === 200) {
                     settotalrevenue(totalRevenueResponse.data?.totalRevenue);
+                } else {
+                    console.log("showusererorr");
                 }
                 if (averageBookingValueResponse.status === 200) {
                     setaveragebookingvalue(averageBookingValueResponse.data?.averageBookingValue || []);
+                } else {
+                    console.log("averageBookingValueResponse");
                 }
 
             } catch (error) {
@@ -85,6 +95,8 @@ const Dashboard = () => {
 
         fetchData();
     }, []);
+
+
 
     const fetchUserGrowth = async (apiEndpoint, setterFunction, start_date = '', end_date = '') => {
         try {

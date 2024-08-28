@@ -1,16 +1,19 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useRef, useState } from 'react';
 import Sidebar from '../Component/Sidebar';
 import { GlobalApi } from '../service/GlobalApi';
 import { Adminaddground, ShowOwnersAPI } from '../service/APIrouter';
 import { ToastContainer, toast } from 'react-toastify';
 import { useNavigate } from 'react-router';
 import Select from 'react-select';
+import { IoIosClose } from "react-icons/io";
 
 const AddGround = () => {
     const [loading, setLoading] = useState(false);
     const navigate = useNavigate();
     const [owerndata, setownerdata] = useState([]);
     const [owerid, setownerid] = useState("");
+    const fileInputRef = useRef(null);
+    const [photoIndexToChange, setPhotoIndexToChange] = useState(null);
     const [formdata, setFormdata] = useState({
         ownerid: owerid,
         groundname: '',
@@ -18,7 +21,7 @@ const AddGround = () => {
         location: '',
         state: '',
         country: '',
-        photos: '',
+        photos: [],
         description: '',
         rulesandregulation: '',
         facilities: '',
@@ -83,9 +86,17 @@ const AddGround = () => {
         const { name, value, files } = e.target;
 
         if (name === 'photos') {
+            const updatedPhotos = [...formdata.photos];
+            console.log("updatedphoto", updatedPhotos);
+            if (photoIndexToChange !== null) {
+                updatedPhotos[photoIndexToChange] = files[0];
+                setPhotoIndexToChange(null);
+            } else {
+                updatedPhotos.push(...Array.from(files));
+            }
             setFormdata({
                 ...formdata,
-                photos: Array.from(files)
+                photos: updatedPhotos
             });
         } else {
             setFormdata({
@@ -116,6 +127,16 @@ const AddGround = () => {
             ...prevFormdata,
             price: updatedPrices
         }));
+    };
+
+    const handleRemove = (index) => {
+        const updatedPhotos = formdata.photos.filter((_, i) => i !== index);
+        setFormdata({ ...formdata, photos: updatedPhotos });
+    };
+
+    const handleChangeimage = (index) => {
+        setPhotoIndexToChange(index);
+        fileInputRef.current.click();
     };
 
     const handleSubmit = async (e) => {
@@ -277,9 +298,30 @@ const AddGround = () => {
                         </div>
 
                         <div className="add-list">
-                            <label>Ground Photos</label>
-                            <input type='file' name='photos' onChange={handlechange} multiple />
+                            <label>Photos</label>
+                            <input
+                                type='file'
+                                placeholder='Enter ground photos'
+                                name='photos'
+                                onChange={handlechange}
+                                ref={fileInputRef}
+                                style={{ display: 'none' }}
+                            />
+                            {formdata.photos.length === 0 ? (
+                                <button type="button" onClick={() => fileInputRef.current.click()}>Add Photos</button>
+                            ) : (
+                                formdata.photos.map((photo, index) => (
+                                    <div key={index} style={{ display: 'flex', flexDirection: 'column' }}>
+                                        <img src={URL.createObjectURL(photo)} alt="Ground" width="100" height="100" />
+                                        <div className="add-list-button-flex">
+                                            <button type="button" onClick={() => handleRemove(index)}>Remove</button>
+                                            <button type="button" onClick={() => handleChangeimage(index)}>Change</button>
+                                        </div>
+                                    </div>
+                                ))
+                            )}
                         </div>
+
                     </div>
 
                     <div className="addground-des-price">
@@ -305,7 +347,7 @@ const AddGround = () => {
                                             <input type="date" name='date' onChange={(e) => handlePriceChange(e, index)} value={priceEntry.date} />
                                         </>
                                     )}
-                                    <input type="time" name='start_time' onChange={(e) => handlePriceChange(e, index)} value={priceEntry.start_time} />
+                                    <input type="time" placeholder="Start_time" name='start_time' onChange={(e) => handlePriceChange(e, index)} value={priceEntry.start_time} />
                                     <input type="time" name='end_time' onChange={(e) => handlePriceChange(e, index)} value={priceEntry.end_time} />
                                 </div>
                             </div>

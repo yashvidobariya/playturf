@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useRef, useState } from 'react'
 import Sidebar from '../Component/Sidebar'
 import { GlobalApi } from '../service/GlobalApi';
 import { Admineditground, Getoneground } from '../service/APIrouter';
@@ -8,10 +8,14 @@ import Lottie from 'lottie-react';
 import loadingdata from '../Data/Playturf.json'
 
 const SingleeditGroundlist = () => {
+    const [oldPhotos, setOldPhotos] = useState([]);
+    const [newPhotos, setNewPhotos] = useState([]);
     const [userData, setUserData] = useState(null);
     const [loading, setloading] = useState(true);
     const navigate = useNavigate();
     const { userId } = useParams();
+    const fileInputRef = useRef(null);
+    const [photoIndexToChange, setPhotoIndexToChange] = useState(null);
     const [formdata, setformdata] = useState({
         groundname: '',
         ownername: '',
@@ -21,9 +25,9 @@ const SingleeditGroundlist = () => {
         country: '',
         address: '',
         rulesandregulation: '',
-        facilities: '',
+        facilities: [],
         sport_type: [],
-        photos: '',
+        photos: [],
         baseprice: '',
         price: [
             { weekday: '', start_time: '', end_time: '', price: '' },
@@ -36,11 +40,21 @@ const SingleeditGroundlist = () => {
         const { name, value, files } = e.target;
 
         if (name === 'photos') {
+            const uploadedPhotos = Array.from(files).map(file =>
+                URL.createObjectURL(file)
+            );
+            setNewPhotos(uploadedPhotos);
+
+            setformdata(prevFormdata => ({
+                ...prevFormdata,
+                photos: Array.from(files)
+            }));
+        } else if (name === 'sport_type') {
             setformdata({
                 ...formdata,
-                photos: Array.from(files)
+                [name]: value.split(',').map(type => type.trim())
             });
-        } else if (name === 'sport_type') {
+        } else if (name === 'facilities') {
             setformdata({
                 ...formdata,
                 [name]: value.split(',').map(type => type.trim())
@@ -124,14 +138,7 @@ const SingleeditGroundlist = () => {
 
                 if (response.status === 200) {
                     const data = response.data;
-                    console.log("response", response);
-
-                    const formattedPrices = data?.ground.price.map(priceEntry => ({
-                        ...priceEntry,
-                        date: priceEntry.date ? priceEntry.date.split('T')[0] : ''
-                    }));
-
-                    setUserData(data);
+                    setOldPhotos(data?.ground.photos || []);
                     setformdata({
                         groundname: data?.ground.groundname || '',
                         ownername: data?.ground.ownername || '',
@@ -142,14 +149,17 @@ const SingleeditGroundlist = () => {
                         address: data?.ground.address || '',
                         rulesandregulation: data?.ground.rulesandregulation || '',
                         sport_type: data?.ground.sport_type || [],
-                        facilities: data?.ground.facilities || '',
+                        facilities: data?.ground.facilities || [],
                         baseprice: data?.ground.baseprice || '',
                         photos: data?.ground.photos || [],
-                        price: formattedPrices || [
+                        price: data?.ground.price || [
                             { weekday: '', start_time: '', end_time: '', price: '' },
                             { date: '', start_time: '', end_time: '', price: '' }
                         ],
                     });
+                    console.log("response", response);
+                    setUserData(data);
+
                     console.log("data", data);
                 } else {
                     console.error('failed to fetch');
@@ -215,19 +225,42 @@ const SingleeditGroundlist = () => {
                         </div>
 
                         <div className="addground-des">
-                            <div className="add-list">
-                                <label>Location</label>
-                                <input type='text' placeholder='Enter location' name='location' onChange={handlechange} value={formdata.location} />
-                            </div>
 
                             <div className="add-list">
                                 <label htmlFor="state">State</label>
                                 <input type='text' placeholder='Enter state' name='state' onChange={handlechange} value={formdata.state} />
                             </div>
+
                             <div className="add-list">
                                 <label>Ground Photos</label>
-                                <input type='file' name='photos' onChange={handlechange} multiple value={formdata.photos.photoid} />
+
+
+                                <button type="button" onClick={() => document.getElementById('fileInput').click()}>Choose Files</button>
+                                <input
+                                    type="file"
+                                    id="fileInput"
+                                    name="photos"
+                                    onChange={handlechange}
+                                    multiple
+                                    style={{ display: 'none' }}
+                                />
                             </div>
+                            <div className="add-list">
+                                {newPhotos.length > 0 ? (
+                                    <div className="photo-preview">
+                                        {newPhotos.map((photo, index) => (
+                                            <img key={index} src={photo} alt={`img${index}`} />
+                                        ))}
+                                    </div>
+                                ) : (
+                                    <div className="photo-preview">
+                                        {oldPhotos.map((photo, index) => (
+                                            <img key={index} src={photo.photourl} alt={`img${index}`} />
+                                        ))}
+                                    </div>
+                                )}
+                            </div>
+
                         </div>
 
                         <div className="addground-des">
@@ -246,15 +279,21 @@ const SingleeditGroundlist = () => {
                             <div className="add-list">
                                 <label>Facilities</label>
                                 <div className="add-list-box">
-                                    <input type='text' placeholder='Enter facilities ' name='facilities' onChange={handlechange} value={formdata.facilities || '-'} />
+                                    <input type='text' placeholder='Enter facilities' name='facilities' onChange={handlechange} value={formdata.facilities || '-'} />
                                 </div>
                             </div>
+
 
                             <div className="add-list">
                                 <label>Sport Types</label>
                                 <div className="add-list-flex">
                                     <input type="text" name="sport_type" onChange={handlechange} value={formdata.sport_type.join(', ')} />
                                 </div>
+                            </div>
+
+                            <div className="add-list">
+                                <label>Location</label>
+                                <input type='text' placeholder='Enter location' name='location' onChange={handlechange} value={formdata.location} />
                             </div>
                         </div>
 

@@ -31,7 +31,6 @@ const Users = () => {
     const currentpost = useMemo(() => {
         return Array.isArray(filteredData) ? filteredData.slice(firstpostindex, lastpostindex) : [];
     }, [filteredData, firstpostindex, lastpostindex]);
-    console.log("currentpage", currentpost);
 
     const handleDateChange = (date) => {
         setSelectedDate(date);
@@ -53,7 +52,6 @@ const Users = () => {
 
                 if (response.status === 201) {
                     setuserdata(response.data.users);
-                    console.log("userdata", response.data.users);
                 } else if (response.status === 401) {
                     seterrormessage("Authentication error. Please login as an Admin.");
                     localStorage.removeItem('token');
@@ -68,6 +66,7 @@ const Users = () => {
         };
         fetchData();
     }, []);
+
 
 
     useEffect(() => {
@@ -78,7 +77,6 @@ const Users = () => {
 
                 if (response.status === 200) {
                     setdashboaddata(response.data.U_Active);
-                    console.log("activeuser", response.data.U_Active);
                 } else if (response.status === 401) {
                     seterrormessage("Authentication error. Please login as an Admin.");
                     localStorage.removeItem('token');
@@ -93,6 +91,7 @@ const Users = () => {
         };
         fetchData();
     }, []);
+
 
     useEffect(() => {
         const fetchData = async () => {

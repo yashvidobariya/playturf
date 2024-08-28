@@ -149,7 +149,7 @@ a {
     justify-content: space-between;
     align-items: center;
     color: gray;
-    z-index: 1000;
+    z-index: 100;
 }
 
 .scrolled {
@@ -1712,16 +1712,28 @@ select {
     font-weight: bold;
 }
 
+.add-list-button-flex button {
+    margin: 10px 3px;
+}
+
 .add-list,
 .add-list-full {
     display: flex;
     flex-direction: column;
 }
 
+.add-list img {
+    width: 200px;
+}
+
 .checkbox {
     display: flex;
     gap: 5px;
 }
+
+/* .edit-photo {
+    display: flex;
+} */
 
 .addgrounderror {
     display: flex;
@@ -1772,13 +1784,23 @@ select {
 .add-list-full textarea,
 .add-list select,
 .add-list-full input,
-.add-list-flex input {
+.add-list-flex input,
+.add-list button {
     padding: 7px 20px;
     border-radius: 10px;
     border: 1px solid var(--primary-color);
     outline: none;
 }
 
+.add-list button {
+    background-color: transparent;
+    cursor: pointer;
+
+    &:hover {
+        background-color: var(--secondary-color);
+        color: var(--color);
+    }
+}
 
 /* .add-list label,
 .add-list-full label {
